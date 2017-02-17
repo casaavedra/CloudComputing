@@ -47,7 +47,8 @@ namespace Isis4426.Proyecto1.ConversorBatch
                 Parallel.ForEach(Voice.PendingConvert(), (voice) =>
                 {
                     Models.Voice newVoice = Convert.ConvertVoiceToMp3(voice);
-                    Voice.Update(newVoice);
+                    if (!Email.Send(newVoice)) Convert.Rollback(newVoice);
+                    if (Voice.Update(newVoice) == 0) Convert.Rollback(newVoice);
                 });
             }
             catch (Exception ex)

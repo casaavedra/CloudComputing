@@ -6,7 +6,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
 {
     internal static class Email
     {
-        internal static void Send(Models.Voice voice)
+        internal static bool Send(Models.Voice voice)
         {
             try
             {
@@ -22,11 +22,15 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
                 SmtpServer.Credentials = new NetworkCredential("username", "password");
                 SmtpServer.EnableSsl = true;
 
-                SmtpServer.Send(mail);                
+                SmtpServer.Send(mail);
+
+                return true;             
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+
+                return false;
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using Isis4426.Proyecto1.ConversorBatch.Models;
+﻿using Isis4426.Proyecto1.ConversorBatch.Models;
 using System.IO;
 using System.Diagnostics;
 
@@ -7,7 +6,7 @@ namespace Isis4426.Proyecto1.ConversorBatch
 {
     internal static class Convert 
     {
-        public static Voice ConvertVoiceToMp3(Voice voice)
+        internal static Voice ConvertVoiceToMp3(Voice voice)
         {
             voice.Destiny = new FileInfo(Path.ChangeExtension(voice.Origin.FullName, ".mp3"));
 
@@ -25,6 +24,14 @@ namespace Isis4426.Proyecto1.ConversorBatch
             process.WaitForExit(500);
 
             return Validate(voice);
+        }
+
+        internal static void Rollback(Voice voice)
+        {
+            if (voice.Destiny.Exists)
+            {
+                File.Delete(voice.Destiny.FullName);
+            }
         }
 
         private static Voice Validate(Voice voice)

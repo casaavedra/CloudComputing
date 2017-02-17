@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="BatchConverter.cs" />
     <Compile Include="Business\Configuration.cs" />
+    <Compile Include="Business\Email.cs" />
     <Compile Include="Business\Voice.cs" />
     <Compile Include="Interfaces\IVoiceCrud.cs" />
     <Compile Include="Data Access\PostgreSqlConnector.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Business\Convert.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Database.cs" />
+    <Compile Include="Models\EmailServer.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

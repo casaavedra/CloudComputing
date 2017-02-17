@@ -10,5 +10,6 @@ namespace Isis4426.Proyecto1.ConversorBatch.Models
         public FileInfo Destiny { get; set; }
         public DateTime ConvertDate { get; set; }
         public Status State { get; set; }
+        public string Email { get; set; }
     }
 }

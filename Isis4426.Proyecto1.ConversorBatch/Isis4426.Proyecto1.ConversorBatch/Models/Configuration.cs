@@ -5,6 +5,7 @@
         private static Configuration instance;
 
         public Database Database { get; set; }
+        public EmailServer EmailServer { get; set; }
 
         public int ConvertTimer { get; set; }
 
@@ -17,6 +18,16 @@
                 Username = "postgress",
                 Password = "identica",
                 Schema = "proyecto1"
+            };
+
+            EmailServer = new EmailServer
+            {
+                SmtpServer = "smtp.gmail.com",
+                From = "ksaavedra3@gmail.com",
+                Subject = "Voz publicada",
+                Body = "Su voz ha sido Publicada en la página del concurso.",
+                Username = "ksaavedra3@gmail.com",
+                Password = "beto4427247"
             };
 
             ConvertTimer = 1000;

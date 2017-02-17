@@ -1,5 +1,6 @@
 ﻿using Isis4426.Proyecto1.ConversorBatch.Business;
 using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -20,7 +21,26 @@ namespace Isis4426.Proyecto1.ConversorBatch
 
         private void BatchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            batchTimer.Stop();           
+            batchTimer.Stop();
+
+            try
+            {
+                ParallelProcess();
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var ex in ae.InnerExceptions)
+                {
+                    Console.WriteLine(ex.Message);                    
+                }
+
+                batchTimer.Start();
+            }
+        }
+
+        private void ParallelProcess()
+        {
+            var exceptions = new ConcurrentQueue<Exception>();
 
             try
             {
@@ -32,9 +52,10 @@ namespace Isis4426.Proyecto1.ConversorBatch
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                batchTimer.Start();
+                exceptions.Enqueue(ex);
             }
+
+            if (exceptions.Count > 0) throw new AggregateException(exceptions);
         }
     }
 }

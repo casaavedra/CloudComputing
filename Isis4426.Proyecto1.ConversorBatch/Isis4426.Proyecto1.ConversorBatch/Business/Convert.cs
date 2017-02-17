@@ -1,5 +1,7 @@
 ﻿using System;
 using Isis4426.Proyecto1.ConversorBatch.Models;
+using System.IO;
+using System.Diagnostics;
 
 namespace Isis4426.Proyecto1.ConversorBatch
 {
@@ -7,7 +9,30 @@ namespace Isis4426.Proyecto1.ConversorBatch
     {
         public static Voice ConvertVoiceToMp3(Voice voice)
         {
-            throw new NotImplementedException();
+            voice.Destiny = new FileInfo(Path.ChangeExtension(voice.Origin.FullName, ".mp3"));
+
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = "ffmpeg",
+                    Arguments = string.Format("-i {0} -codec:a libmp3lame -qscale:a 2 {1}",
+                    voice.Origin.FullName, voice.Destiny.FullName)
+                }
+            };
+
+            process.Start();
+            process.WaitForExit(500);
+
+            return Validate(voice);
+        }
+
+        private static Voice Validate(Voice voice)
+        {
+            Voice newVoice = voice;
+            newVoice.State = File.Exists(voice.Destiny.FullName) ? Status.GENERATED : Status.ERROR;
+
+            return newVoice;
         }
     }
 }

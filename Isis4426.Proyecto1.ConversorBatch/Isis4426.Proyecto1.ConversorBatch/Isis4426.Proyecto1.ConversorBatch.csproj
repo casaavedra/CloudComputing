@@ -70,7 +70,6 @@
     <Compile Include="BatchConverter.cs" />
     <Compile Include="Business\Configuration.cs" />
     <Compile Include="Business\Voice.cs" />
-    <Compile Include="Interfaces\IVoiceConverter.cs" />
     <Compile Include="Interfaces\IVoiceCrud.cs" />
     <Compile Include="Data Access\PostgreSqlConnector.cs" />
     <Compile Include="Data Access\Voice.cs" />

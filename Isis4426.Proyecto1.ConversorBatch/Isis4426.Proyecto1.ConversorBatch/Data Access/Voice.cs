@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Npgsql;
 using Isis4426.Proyecto1.ConversorBatch.Interfaces;
 using Isis4426.Proyecto1.ConversorBatch.Models;
@@ -19,7 +16,6 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 
             using (GetConnection())
             {
-
                 using (NpgsqlCommand comando = GetCommand(query))
                 {
                     comando.Connection = Connection;

@@ -34,7 +34,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
         {
             try
             {
-                if (!Directory.Exists(RutaBase))
+                if (!Directory.Exists(@RutaBase))
                 {
                     Directory.CreateDirectory(@RutaBase);
                 }

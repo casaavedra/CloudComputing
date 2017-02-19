@@ -11,7 +11,8 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
     {
         public List<Models.Voice> PendingConvert()
         {
-            string query = File.ReadAllText(Environment.CurrentDirectory + @"\Sentencias\ObtenerVocesPendientes.txt");
+            string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ObtenerVocesPendientes.txt");
+            string query = File.ReadAllText(path);
             List<Models.Voice> pendingVoices = new List<Models.Voice>();
 
             using (GetConnection())
@@ -50,7 +51,8 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
         public int Update(Models.Voice voice)
         {
             int result;
-            string query = File.ReadAllText(Environment.CurrentDirectory + @"\Sentencias\ActualizarEstadoVoz.txt");
+            string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ActualizarEstadoVoz.txt");
+            string query = File.ReadAllText(path);
                         
             using (GetConnection())
             {

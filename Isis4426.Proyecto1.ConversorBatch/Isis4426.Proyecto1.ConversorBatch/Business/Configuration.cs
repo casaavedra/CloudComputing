@@ -1,5 +1,4 @@
-﻿using Isis4426.Proyecto1.ConversorBatch.Models;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -7,17 +6,17 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
 {
     internal static class Configuration
     {
-        private static string RutaBase = Path.GetPathRoot(Environment.SystemDirectory) + @"CloudComputing\Voces";
+        private static string basePath = Path.GetPathRoot(Environment.SystemDirectory) + @"CloudComputing\Voces";
 
         internal static void Load()
         {            
             try
             {
-                using (FileStream fileStream = new FileStream(@RutaBase + @"\Configuracion.xml", FileMode.Open))
+                using (FileStream fileStream = new FileStream(basePath + @"\Configuracion.xml", FileMode.Open))
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(Database));
-                    Database result = (Database)serializer.Deserialize(fileStream);
-                    Models.Configuration.Instance.Database = result;
+                    XmlSerializer serializer = new XmlSerializer(typeof(Models.Configuration));
+                    Models.Configuration.Instance = (Models.Configuration)serializer.Deserialize(fileStream);
+                    Models.Configuration.Instance.BasePath = basePath;
                 }
             }
             catch (Exception ex)
@@ -26,7 +25,6 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
 
                 Models.Configuration.Instance = null;
                 Save();
-                Load();                
             }
         }
 
@@ -34,16 +32,15 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
         {
             try
             {
-                if (!Directory.Exists(@RutaBase))
+                if (!Directory.Exists(Models.Configuration.Instance.BasePath))
                 {
-                    Directory.CreateDirectory(@RutaBase);
+                    Directory.CreateDirectory(Models.Configuration.Instance.BasePath);
                 }
+                                
+                XmlSerializer writer = new XmlSerializer(typeof(Models.Configuration));
 
-                Database datos = Models.Configuration.Instance.Database;
-                XmlSerializer writer = new XmlSerializer(typeof(Database));
-
-                StreamWriter file = new StreamWriter(@RutaBase + @"\Configuracion.xml");
-                writer.Serialize(file, datos);
+                StreamWriter file = new StreamWriter(Models.Configuration.Instance.BasePath + @"\Configuracion.xml");
+                writer.Serialize(file, Models.Configuration.Instance);
                 file.Close();
                 
             }

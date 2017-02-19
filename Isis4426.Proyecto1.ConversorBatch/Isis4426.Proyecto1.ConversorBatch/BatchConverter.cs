@@ -8,15 +8,20 @@ namespace Isis4426.Proyecto1.ConversorBatch
 {
     public class BatchConverter
     {
-        private Timer batchTimer;
+        private readonly Timer batchTimer;
 
         public BatchConverter()
         {
             Configuration.Load();
 
             batchTimer = new Timer { Interval = Models.Configuration.Instance.ConvertTimer };
-            batchTimer.Elapsed += BatchTimer_Elapsed;
-            batchTimer.Start();
+            batchTimer.Elapsed += BatchTimer_Elapsed;            
+        }
+
+        public void StartConvertion()
+        {
+            //batchTimer.Start();
+            SecuencialProcess();
         }
 
         private void BatchTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -25,7 +30,8 @@ namespace Isis4426.Proyecto1.ConversorBatch
 
             try
             {
-                ParallelProcess();
+                //ParallelProcess();
+                SecuencialProcess();
             }
             catch (AggregateException ae)
             {
@@ -35,6 +41,16 @@ namespace Isis4426.Proyecto1.ConversorBatch
                 }
 
                 batchTimer.Start();
+            }
+        }
+
+        private void SecuencialProcess()
+        {
+            foreach (Models.Voice voice in Voice.PendingConvert())
+            {
+                Models.Voice newVoice = Convert.ConvertVoiceToMp3(voice);
+                if (!Email.Send(newVoice)) Convert.Rollback(newVoice);
+                if (Voice.Update(newVoice) == 0) Convert.Rollback(newVoice);
             }
         }
 

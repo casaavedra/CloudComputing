@@ -1,13 +1,18 @@
-﻿namespace Isis4426.Proyecto1.ConversorBatch.Models
+﻿using System;
+using System.IO;
+using System.Xml.Serialization;
+
+namespace Isis4426.Proyecto1.ConversorBatch.Models
 {
-    internal class Configuration
+    public class Configuration
     {
         private static Configuration instance;
 
         public Database Database { get; set; }
         public EmailServer EmailServer { get; set; }
-
         public int ConvertTimer { get; set; }
+        [XmlIgnore]
+        public string BasePath { get; set; }
 
         private Configuration()
         {
@@ -15,9 +20,9 @@
             {
                 Server = "localhost",
                 Port = 5432,
-                Username = "postgress",
-                Password = "identica",
-                Schema = "proyecto1"
+                Username = "postgres",
+                Password = "agiles",
+                Schema = "cloud"
             };
 
             EmailServer = new EmailServer
@@ -30,7 +35,8 @@
                 Password = "beto4427247"
             };
 
-            ConvertTimer = 1000;
+            BasePath = Path.GetPathRoot(Environment.SystemDirectory) + @"CloudComputing\Voces";
+            ConvertTimer = 2000;
         }
 
         public static Configuration Instance

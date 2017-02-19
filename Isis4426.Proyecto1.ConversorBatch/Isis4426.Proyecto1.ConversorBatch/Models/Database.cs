@@ -1,6 +1,6 @@
 ﻿namespace Isis4426.Proyecto1.ConversorBatch.Models
 {
-    internal class Database
+    public class Database
     {
         public string Server { get; set; }
         public int Port { get; set; }

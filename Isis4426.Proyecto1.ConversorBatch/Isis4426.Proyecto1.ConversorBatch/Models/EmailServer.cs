@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Isis4426.Proyecto1.ConversorBatch.Models
+﻿namespace Isis4426.Proyecto1.ConversorBatch.Models
 {
-    internal class EmailServer
+    public class EmailServer
     {
         public string SmtpServer { get; set; }
         public string From { get; set; }

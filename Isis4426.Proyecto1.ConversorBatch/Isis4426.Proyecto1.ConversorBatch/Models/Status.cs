@@ -2,7 +2,7 @@
 {
     public enum Status
     {
-        PROCESSING,
+        PROCESSING=1,
         GENERATED,
         ERROR
     }

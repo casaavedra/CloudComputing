@@ -4,18 +4,17 @@ using Npgsql;
 using Isis4426.Proyecto1.ConversorBatch.Interfaces;
 using Isis4426.Proyecto1.ConversorBatch.Models;
 using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 {
     class Voice : PostgreSqlConnector, IVoiceCrud
     {
         private const string ObtenerVocesPendientes = "SELECT consecutivo, ruta_original, email FROM voces inner join usuarios on documento = usuario WHERE estado = 1;";
-        private const string ActualizarEstadoVoz = "UPDATE voces SET estado = :estado, fecha_conversion = :fecha_conversion, ruta_convertido = :ruta_convertido WHERE consecutivo = :consecutivo";
+        private const string ActualizarEstadoVoz = "UPDATE voces SET estado = @estado, fecha_conversion = @fecha_conversion, ruta_convertido = @ruta_convertido WHERE consecutivo = @consecutivo";
 
         public List<Models.Voice> PendingConvert()
         {
-            //string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ObtenerVocesPendientes.txt");
-            //string query = "ObtenerVocesPendientes";
             List<Models.Voice> pendingVoices = new List<Models.Voice>();
 
             using (GetConnection())
@@ -54,8 +53,6 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
         public int Update(Models.Voice voice)
         {
             int result;
-            //string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ActualizarEstadoVoz.txt");
-            //string query = File.ReadAllText(path);
                         
             using (GetConnection())
             {

@@ -8,8 +8,9 @@ namespace Isis4426.Proyecto1.ConversorBatch
     {
         internal static Voice ConvertVoiceToMp3(Voice voice)
         {
-            voice.Destiny = new FileInfo(Path.ChangeExtension(voice.Origin.FullName, ".mp3"));
-
+            string destinyName = Path.Combine(voice.Origin.DirectoryName, voice.Consecutive.ToString() + voice.Origin.Name);
+            voice.Destiny = new FileInfo( Path.ChangeExtension(destinyName, ".mp3"));
+            
             var process = new Process
             {
                 StartInfo =

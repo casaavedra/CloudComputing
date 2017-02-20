@@ -1,48 +1,29 @@
 ﻿using Isis4426.Proyecto1.ConversorBatch.Business;
 using System;
 using System.Collections.Concurrent;
+using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace Isis4426.Proyecto1.ConversorBatch
 {
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession,
+                     ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceContract]
     public class BatchConverter
     {
-        private readonly Timer batchTimer;
-
         public BatchConverter()
         {
             Configuration.Load();
-
-            batchTimer = new Timer { Interval = Models.Configuration.Instance.ConvertTimer };
-            batchTimer.Elapsed += BatchTimer_Elapsed;            
         }
 
+        [WebGet(UriTemplate = "/convertir", ResponseFormat = WebMessageFormat.Json)]
+        [OperationContract]
         public void StartConvertion()
         {
-            batchTimer.Start();
-            //SecuencialProcess();
-        }
-
-        private void BatchTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            batchTimer.Stop();
-
-            try
-            {                
-                SecuencialProcess();
-                //ParallelProcess();
-            }
-            catch (AggregateException ae)
-            {
-                foreach (var ex in ae.InnerExceptions)
-                {
-                    Console.WriteLine(ex.Message);                    
-                }
-
-                batchTimer.Start();
-            }
-        }
+            SecuencialProcess();
+            //ParallelProcess();
+        }       
 
         private void SecuencialProcess()
         {

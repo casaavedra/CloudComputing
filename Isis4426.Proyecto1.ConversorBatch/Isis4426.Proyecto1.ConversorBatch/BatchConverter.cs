@@ -20,8 +20,8 @@ namespace Isis4426.Proyecto1.ConversorBatch
 
         public void StartConvertion()
         {
-            //batchTimer.Start();
-            SecuencialProcess();
+            batchTimer.Start();
+            //SecuencialProcess();
         }
 
         private void BatchTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -29,9 +29,9 @@ namespace Isis4426.Proyecto1.ConversorBatch
             batchTimer.Stop();
 
             try
-            {
-                //ParallelProcess();
+            {                
                 SecuencialProcess();
+                //ParallelProcess();
             }
             catch (AggregateException ae)
             {

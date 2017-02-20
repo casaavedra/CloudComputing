@@ -14,7 +14,7 @@ namespace Isis4426.Proyecto1.ConversorBatch
             {
                 StartInfo =
                 {
-                    FileName = "ffmpeg",
+                    FileName = @"ffmpeg\bin\ffmpeg",
                     Arguments = string.Format("-i {0} -codec:a libmp3lame -qscale:a 2 {1}",
                     voice.Origin.FullName, voice.Destiny.FullName)
                 }

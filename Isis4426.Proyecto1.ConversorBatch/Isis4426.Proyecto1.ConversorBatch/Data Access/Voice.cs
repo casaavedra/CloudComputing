@@ -9,15 +9,18 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 {
     class Voice : PostgreSqlConnector, IVoiceCrud
     {
+        private const string ObtenerVocesPendientes = "SELECT consecutivo, ruta_original, email FROM voces inner join usuarios on documento = usuario WHERE estado = 1;";
+        private const string ActualizarEstadoVoz = "UPDATE voces SET estado = :estado, fecha_conversion = :fecha_conversion, ruta_convertido = :ruta_convertido WHERE consecutivo = :consecutivo";
+
         public List<Models.Voice> PendingConvert()
         {
-            string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ObtenerVocesPendientes.txt");
-            string query = File.ReadAllText(path);
+            //string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ObtenerVocesPendientes.txt");
+            //string query = "ObtenerVocesPendientes";
             List<Models.Voice> pendingVoices = new List<Models.Voice>();
 
             using (GetConnection())
             {
-                using (NpgsqlCommand comando = GetCommand(query))
+                using (NpgsqlCommand comando = GetCommand(ObtenerVocesPendientes))
                 {
                     comando.Connection = Connection;
                     using (NpgsqlDataReader dr = comando.ExecuteReader())
@@ -51,12 +54,12 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
         public int Update(Models.Voice voice)
         {
             int result;
-            string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ActualizarEstadoVoz.txt");
-            string query = File.ReadAllText(path);
+            //string path = Path.Combine(Configuration.Instance.BasePath, "Sentencias", "ActualizarEstadoVoz.txt");
+            //string query = File.ReadAllText(path);
                         
             using (GetConnection())
             {
-                using (NpgsqlCommand comando = GetCommand(query, ResortObject(voice)))
+                using (NpgsqlCommand comando = GetCommand(ActualizarEstadoVoz, ResortObject(voice)))
                 {
                     comando.Connection = Connection;
                     result = comando.ExecuteNonQuery();
@@ -72,6 +75,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 
             voiceReg.Consecutive = dr.GetInt32(dr.GetOrdinal("consecutivo"));
             voiceReg.Origin = new FileInfo(dr.GetString(dr.GetOrdinal("ruta_original")));
+            voiceReg.Email = dr.GetString(dr.GetOrdinal("email"));
 
             return voiceReg;
         }
@@ -83,7 +87,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
             List<NpgsqlParameter> parameters = new List<NpgsqlParameter>();
             parameters.Add(new NpgsqlParameter("consecutivo", voice.Consecutive));
             parameters.Add(new NpgsqlParameter("estado", (int)Status.GENERATED));
-            parameters.Add(new NpgsqlParameter("fecha_convesion", DateTime.Now));
+            parameters.Add(new NpgsqlParameter("fecha_conversion", DateTime.Now));
             parameters.Add(new NpgsqlParameter("ruta_convertido", voice.Destiny.FullName));
 
             return parameters;

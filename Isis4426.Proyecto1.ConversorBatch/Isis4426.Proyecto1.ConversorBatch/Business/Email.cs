@@ -19,7 +19,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
                 mail.Body = Models.Configuration.Instance.EmailServer.Body;
 
                 SmtpServer.Port = 587;
-                SmtpServer.Credentials = new NetworkCredential("username", "password");
+                SmtpServer.Credentials = new NetworkCredential("ksaavedra3", "beto4427247");
                 SmtpServer.EnableSsl = true;
 
                 SmtpServer.Send(mail);

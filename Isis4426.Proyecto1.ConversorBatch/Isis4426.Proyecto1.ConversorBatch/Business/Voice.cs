@@ -9,7 +9,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
         {
             try
             {
-                Data_Access.Voice voiceDal = new Data_Access.Voice();
+                Data_Access.Voice.Instance();
 
                 return voiceDal.PendingConvert();
             }

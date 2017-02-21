@@ -4,7 +4,6 @@ using Npgsql;
 using Isis4426.Proyecto1.ConversorBatch.Interfaces;
 using Isis4426.Proyecto1.ConversorBatch.Models;
 using System.IO;
-using MySql.Data.MySqlClient;
 
 namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 {
@@ -13,55 +12,65 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
         private const string ObtenerVocesPendientes = "SELECT consecutivo, ruta_original, email FROM voces inner join usuarios on documento = usuario WHERE estado = 1;";
         private const string ActualizarEstadoVoz = "UPDATE voces SET estado = @estado, fecha_conversion = @fecha_conversion, ruta_convertido = @ruta_convertido WHERE consecutivo = @consecutivo";
 
+        internal static Voice Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (padlock)
+                    {
+                        instance = new Voice();
+                    }
+                }
+
+                return (Voice)instance;
+            }
+        }
+        
         public List<Models.Voice> PendingConvert()
         {
             List<Models.Voice> pendingVoices = new List<Models.Voice>();
-
-            using (GetConnection())
+            
+            using (NpgsqlCommand comando = GetCommand(ObtenerVocesPendientes))
             {
-                using (NpgsqlCommand comando = GetCommand(ObtenerVocesPendientes))
+                comando.Connection = Connection;
+                using (NpgsqlDataReader dr = comando.ExecuteReader())
                 {
-                    comando.Connection = Connection;
-                    using (NpgsqlDataReader dr = comando.ExecuteReader())
+                    if (dr.HasRows)
                     {
-                        if (dr.HasRows)
+                        while (dr.Read())
                         {
-                            while (dr.Read())
+                            Models.Voice voice = null;
+
+                            try
                             {
-                                Models.Voice voice = null;
-
-                                try
-                                {
-                                    voice = CreateObject(dr) as Models.Voice;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.Message + " en registro " + voice.Consecutive.ToString());
-                                    voice.State = Status.ERROR;
-                                }
-
-                                pendingVoices.Add(voice);
+                                voice = CreateObject(dr) as Models.Voice;
                             }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message + " en registro " + voice.Consecutive.ToString());
+                                voice.State = Status.ERROR;
+                            }
+
+                            pendingVoices.Add(voice);
                         }
                     }
                 }
             }
-
+            
             return pendingVoices;
         }
 
         public int Update(Models.Voice voice)
         {
-            int result;
-                        
-            using (GetConnection())
+            int result;                        
+           
+            using (NpgsqlCommand comando = GetCommand(ActualizarEstadoVoz, ResortObject(voice)))
             {
-                using (NpgsqlCommand comando = GetCommand(ActualizarEstadoVoz, ResortObject(voice)))
-                {
-                    comando.Connection = Connection;
-                    result = comando.ExecuteNonQuery();
-                }
-            }
+                comando.Connection = Connection;
+                result = comando.ExecuteNonQuery();
+            }            
 
             return result;
         }
@@ -92,7 +101,7 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 
         internal override void TestConnection()
         {
-            using (NpgsqlConnection conn = GetConnection())
+            using (NpgsqlConnection conn = Connection)
             {
                 if (conn.State != System.Data.ConnectionState.Open)
                 {

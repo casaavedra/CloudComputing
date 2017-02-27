@@ -9,25 +9,10 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 {
     class Voice : PostgreSqlConnector, IVoiceCrud
     {
-        private const string ObtenerVocesPendientes = "SELECT consecutivo, ruta_original, email FROM voces inner join usuarios on documento = usuario WHERE estado = 1;";
-        private const string ActualizarEstadoVoz = "UPDATE voces SET estado = @estado, fecha_conversion = @fecha_conversion, ruta_convertido = @ruta_convertido WHERE consecutivo = @consecutivo";
+        private const string ObtenerVozPendiente = "SELECT id, urlOrigen, email FROM Pista WHERE estado = 1 LIMIT 1 FOR UPDATE SKIP LOCKED;";
+        private const string ObtenerVocesPendientes = "SELECT count(id) FROM Pista WHERE estado = 1;";
+        private const string ActualizarEstadoVoz = "UPDATE Pista SET estado = @estado, updatedAt = @fecha_conversion, urlFinal = @ruta_convertido WHERE id = @consecutivo";
 
-        internal static Voice Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (padlock)
-                    {
-                        instance = new Voice();
-                    }
-                }
-
-                return (Voice)instance;
-            }
-        }
-        
         public List<Models.Voice> PendingConvert()
         {
             List<Models.Voice> pendingVoices = new List<Models.Voice>();
@@ -62,15 +47,62 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
             return pendingVoices;
         }
 
+        public Models.Voice GetFirstPendingConvert()
+        {
+            Models.Voice voice = null;
+
+            using (NpgsqlCommand command = GetCommand(ObtenerVozPendiente))
+            {
+                command.Connection = Connection;
+                command.Transaction = Transaction;
+
+                using (NpgsqlDataReader dr = command.ExecuteReader())
+                {
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            try
+                            {
+                                voice = CreateObject(dr) as Models.Voice;
+                            }
+                            catch (Exception ex)
+                            {
+                                voice = new Models.Voice { State = Status.ERROR };
+                                Console.WriteLine(ex.Message + " en registro " + voice.Consecutive.ToString());
+                            }
+                        }
+                    }                    
+                }
+            }
+
+            return voice;
+        }
+
         public int Update(Models.Voice voice)
         {
             int result;                        
            
-            using (NpgsqlCommand comando = GetCommand(ActualizarEstadoVoz, ResortObject(voice)))
+            using (NpgsqlCommand command = GetCommand(ActualizarEstadoVoz, ResortObject(voice)))
             {
-                comando.Connection = Connection;
-                result = comando.ExecuteNonQuery();
+                command.Connection = Connection;
+                command.Transaction = Transaction;
+                result = command.ExecuteNonQuery();
             }            
+
+            return result;
+        }
+
+        public int GetCountPendingVoices()
+        {
+            int result;
+
+            using (NpgsqlCommand command = GetCommand(ObtenerVocesPendientes))
+            {
+                command.Connection = Connection;
+                command.Transaction = Transaction;
+                result = int.Parse(command.ExecuteScalar().ToString());
+            }
 
             return result;
         }
@@ -79,8 +111,8 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
         {
             Models.Voice voiceReg = new Models.Voice();
 
-            voiceReg.Consecutive = dr.GetInt32(dr.GetOrdinal("consecutivo"));
-            voiceReg.Origin = new FileInfo(dr.GetString(dr.GetOrdinal("ruta_original")));
+            voiceReg.Consecutive = dr.GetInt32(dr.GetOrdinal("id"));
+            voiceReg.Origin = new FileInfo(dr.GetString(dr.GetOrdinal("urlOrigen")));
             voiceReg.Email = dr.GetString(dr.GetOrdinal("email"));
 
             return voiceReg;

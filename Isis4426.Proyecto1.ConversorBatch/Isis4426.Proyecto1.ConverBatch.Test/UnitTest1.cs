@@ -7,10 +7,17 @@ namespace Isis4426.Proyecto1.ConverBatch.Test
     public class UnitTest1
     {
         [TestMethod]
-        public void ConvertirWav()
+        public void ConvertirWavSecuencial()
         {
             ConversorBatch.BatchConverter dll = new ConversorBatch.BatchConverter();
-            dll.StartConvertion();
+            dll.StartSecuencialConvertion();
+        }
+
+        [TestMethod]
+        public void ConvertirWavParalelo()
+        {
+            ConversorBatch.BatchConverter dll = new ConversorBatch.BatchConverter();
+            dll.StartParallelConvertion();
         }
     }
 }

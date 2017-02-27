@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isis4426.Proyecto1.ConverBa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isis4426.Proyecto1.ConversorBatch.Host", "Isis4426.Proyecto1.ConversorBatch.Host\Isis4426.Proyecto1.ConversorBatch.Host.csproj", "{63F4E85F-25B3-4E19-99ED-9B9297675325}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isis4426.Proyecto1.ConverterBatch.Test.App", "Isis4426.Proyecto1.ConverterBatch.Test.App\Isis4426.Proyecto1.ConverterBatch.Test.App.csproj", "{620F0363-C10F-438F-ACB9-9B1FF6AD3F9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Isis4426.Proyecto1.ConversorBatch.Timer", "Isis4426.Proyecto1.ConversorBatch.Timer\Isis4426.Proyecto1.ConversorBatch.Timer.csproj", "{19A2C39B-67FC-40C1-8D03-381AD40804C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{63F4E85F-25B3-4E19-99ED-9B9297675325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63F4E85F-25B3-4E19-99ED-9B9297675325}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63F4E85F-25B3-4E19-99ED-9B9297675325}.Release|Any CPU.Build.0 = Release|Any CPU
+		{620F0363-C10F-438F-ACB9-9B1FF6AD3F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{620F0363-C10F-438F-ACB9-9B1FF6AD3F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{620F0363-C10F-438F-ACB9-9B1FF6AD3F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{620F0363-C10F-438F-ACB9-9B1FF6AD3F9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19A2C39B-67FC-40C1-8D03-381AD40804C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19A2C39B-67FC-40C1-8D03-381AD40804C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19A2C39B-67FC-40C1-8D03-381AD40804C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19A2C39B-67FC-40C1-8D03-381AD40804C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

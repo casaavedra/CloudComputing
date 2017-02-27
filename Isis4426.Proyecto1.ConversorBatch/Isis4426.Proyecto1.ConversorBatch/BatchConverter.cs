@@ -17,35 +17,56 @@ namespace Isis4426.Proyecto1.ConversorBatch
             Configuration.Load();
         }
 
-        [WebGet(UriTemplate = "/convertir", ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(UriTemplate = "/convertir")]
         [OperationContract]
-        public void StartConvertion()
-        {
+        public void StartSecuencialConvertion()
+        {            
             SecuencialProcess();
-            //ParallelProcess();
-        }       
+            Console.WriteLine("secuencial");            
+        }
 
-        private void SecuencialProcess()
+        [WebGet(UriTemplate = "/convertirParalelo")]
+        [OperationContract]
+        public void StartParallelConvertion()
         {
-            foreach (Models.Voice voice in Voice.PendingConvert())
+            try
             {
-                Models.Voice newVoice = Convert.ConvertVoiceToMp3(voice);
-                if (!Email.Send(newVoice)) Convert.Rollback(newVoice);
-                if (Voice.Update(newVoice) == 0) Convert.Rollback(newVoice);
+                ParallelProcess();
+                Console.WriteLine("parallel");
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var ex in ae.InnerExceptions)
+                {
+                    if (ex is ArgumentException)
+                        Console.WriteLine(ex.Message);
+                    else
+                        throw ex;
+                }
             }
         }
 
+        private void SecuencialProcess()
+        {
+            try
+            {
+                Voice.Process();
+            }            
+            catch (Exception)
+            {
+                //Controlled in the Business Layer
+            }
+        }
+        
         private void ParallelProcess()
         {
             var exceptions = new ConcurrentQueue<Exception>();
 
             try
             {
-                Parallel.ForEach(Voice.PendingConvert(), (voice) =>
+                Parallel.For(0, Voice.GetCountPendingConvert(), (voice) =>
                 {
-                    Models.Voice newVoice = Convert.ConvertVoiceToMp3(voice);
-                    if (!Email.Send(newVoice)) Convert.Rollback(newVoice);
-                    if (Voice.Update(newVoice) == 0) Convert.Rollback(newVoice);
+                    Voice.Process();
                 });
             }
             catch (Exception ex)

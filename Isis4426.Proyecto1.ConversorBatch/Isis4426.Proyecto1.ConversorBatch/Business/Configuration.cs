@@ -12,19 +12,22 @@ namespace Isis4426.Proyecto1.ConversorBatch.Business
         {            
             try
             {
-                using (FileStream fileStream = new FileStream(basePath + @"\Configuracion.xml", FileMode.Open))
+                Models.Configuration.Instance = null;
+                Models.Configuration.Instance.BasePath = basePath;
+
+                /*using (FileStream fileStream = new FileStream(basePath + @"\Configuracion.xml", FileMode.Open))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Models.Configuration));
                     Models.Configuration.Instance = (Models.Configuration)serializer.Deserialize(fileStream);
                     Models.Configuration.Instance.BasePath = basePath;
-                }
+                }*/
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
 
-                Models.Configuration.Instance = null;
-                Save();
+                /*Models.Configuration.Instance = null;
+                Save();*/
             }
         }
 

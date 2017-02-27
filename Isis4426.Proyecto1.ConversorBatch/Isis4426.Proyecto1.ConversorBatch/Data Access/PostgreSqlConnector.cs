@@ -6,14 +6,13 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 {
     abstract class PostgreSqlConnector
     {
-        private string serverConnectionString;
+        private readonly string serverConnectionString;
         protected NpgsqlConnection Connection;
         internal NpgsqlTransaction Transaction;
 
-        protected static PostgreSqlConnector instance;
         protected static readonly object padlock = new object();
                 
-        protected PostgreSqlConnector()
+        internal PostgreSqlConnector()
         {
             serverConnectionString = string.Format("server={0};user id={1};password={2};port={3};database={4};",
                 Configuration.Instance.Database.Server,
@@ -32,12 +31,12 @@ namespace Isis4426.Proyecto1.ConversorBatch.Data_Access
 
         internal void Commit()
         {
-            Transaction = Connection.BeginTransaction();
+            Transaction.Commit();
         }
 
         internal void Rollback()
         {
-            Transaction = Connection.BeginTransaction();
+            if (Transaction != null) Transaction.Rollback();
         }
 
         private void GetConnection()
